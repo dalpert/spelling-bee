@@ -76,11 +76,18 @@ def pickle_data(data, var_name: str) -> None:
         pickle.dump(data, file)
 
 
+def load_data(var_name: str):
+    with open(f"{PICKLE_PATH}/{var_name}.pkl", "rb") as file:
+        # Load the object from the file
+        loaded_object = pickle.load(file)
+    return loaded_object
+
+
 def main():
     links = generate_links()
     word_dict = {}
     combo_frequency_dict = {}
-    for link in links[:10]:
+    for link in links:
         soup = get_soup(link)
         center_letter = get_center_letter(soup)
         word_lst = get_words(soup)
