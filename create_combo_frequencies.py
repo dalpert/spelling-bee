@@ -42,11 +42,17 @@ def get_center_letter(soup: BeautifulSoup) -> str:
     return soup.find_all(class_="bee-center")[1].text
 
 
+def create_key(letters: set):
+    return "".join(sorted(letters))
+
+
+def get_letter_set(word: str) -> set:
+    return set(c for c in word)
+
+
 def update_combo_frequency(
     combo_frequency: dict, unique_letters: set, center_letter: str
 ) -> str:
-    def create_key(letters: set):
-        return "".join(sorted(letters))
 
     for i in range(1, 8):
         combos = list(itertools.combinations(unique_letters, i))
@@ -55,17 +61,29 @@ def update_combo_frequency(
             combo_frequency[key] = combo_frequency.get(key, 0) + 1
 
 
+def add_words_to_word_dict(word_dict, word_lst):
+    for word in word_lst:
+        key = create_key(get_letter_set(word))
+        if key in word_dict:
+            word_dict[key].append(word)
+        else:
+            word_dict[key] = [word]
+
+
 def main():
-    spelling_bee_links = generate_links()
-    combo_frequency = {}
-    for link in spelling_bee_links[:30]:
+    links = generate_links()
+    word_dict = {}
+    combo_frequency_dict = {}
+    for link in links[:10]:
         soup = get_soup(link)
         center_letter = get_center_letter(soup)
         word_lst = get_words(soup)
-        # update_combo_frequency(combo_frequency, unique_letters, center_letter)
-    # file_path = f"{PICKLE_PATH}/combo_frequency.pkl"
-    # with open(file_path, "wb") as file:
-    #     pickle.dump(combo_frequency, file)
+        unique_letters = get_unique_letters(word_lst)
+        update_combo_frequency(combo_frequency_dict, unique_letters, center_letter)
+        add_words_to_word_dict(word_dict, word_lst)
+    file_path = f"{PICKLE_PATH}/combo_frequency.pkl"
+    with open(file_path, "wb") as file:
+        pickle.dump(combo_frequency, file)
 
 
 if __name__ == "__main__":
