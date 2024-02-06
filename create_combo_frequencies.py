@@ -38,16 +38,8 @@ def get_unique_letters(word_lst: list[str]) -> set:
     return unique_letters
 
 
-def get_center_letter(word_lst: list[str]) -> str:
-    common_letters = set(word_lst[0])
-
-    # Find the intersection of sets for each subsequent word
-    for word in word_lst[1:]:
-        common_letters.intersection_update(set(word))
-
-    # Print or use the common letter(s)
-    assert len(common_letters) == 1
-    return list(common_letters)[0]
+def get_center_letter(soup: BeautifulSoup) -> str:
+    return soup.find_all(class_="bee-center")[1].text
 
 
 def update_combo_frequency(
@@ -66,14 +58,14 @@ def update_combo_frequency(
 def main():
     spelling_bee_links = generate_links()
     combo_frequency = {}
-    for link in spelling_bee_links:
-        words = get_words(link)
-        unique_letters = get_unique_letters(words)
-        center_letter = get_center_letter(words)
-        update_combo_frequency(combo_frequency, unique_letters, center_letter)
-    file_path = f"{PICKLE_PATH}/combo_frequency.pkl"
-    with open(file_path, "wb") as file:
-        pickle.dump(combo_frequency, file)
+    for link in spelling_bee_links[:30]:
+        soup = get_soup(link)
+        center_letter = get_center_letter(soup)
+        word_lst = get_words(soup)
+        # update_combo_frequency(combo_frequency, unique_letters, center_letter)
+    # file_path = f"{PICKLE_PATH}/combo_frequency.pkl"
+    # with open(file_path, "wb") as file:
+    #     pickle.dump(combo_frequency, file)
 
 
 if __name__ == "__main__":
