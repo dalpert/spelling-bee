@@ -70,6 +70,12 @@ def add_words_to_word_dict(word_dict, word_lst):
             word_dict[key] = [word]
 
 
+def pickle_data(var_name: str) -> None:
+    file_path = f"{PICKLE_PATH}/{var_name.__name__}.pkl"
+    with open(file_path, "wb") as file:
+        pickle.dump(var_name, file)
+
+
 def main():
     links = generate_links()
     word_dict = {}
@@ -81,9 +87,10 @@ def main():
         unique_letters = get_unique_letters(word_lst)
         update_combo_frequency(combo_frequency_dict, unique_letters, center_letter)
         add_words_to_word_dict(word_dict, word_lst)
+
     file_path = f"{PICKLE_PATH}/combo_frequency.pkl"
     with open(file_path, "wb") as file:
-        pickle.dump(combo_frequency, file)
+        pickle.dump(combo_frequency_dict, file)
 
 
 if __name__ == "__main__":
