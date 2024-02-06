@@ -1,12 +1,8 @@
 from bs4 import BeautifulSoup
-import numpy as np
-import pandas as pd
-import urllib
-import urllib.request
 import itertools
-import datetime
 import pickle
 from urllib.request import urlopen
+import timeit
 
 PICKLE_PATH = "data/pickles"
 
@@ -16,10 +12,16 @@ def generate_links() -> list[str]:
     return [f"https://www.sbsolver.com/s/{i}" for i in range(1, 2096)]
 
 
-def get_words(link: str) -> list[str]:
+def get_soup(link: str) -> BeautifulSoup:
+    """Function to return the soup for a given link so we don't have to repeatedly call it in other
+    functions and hit any rate limits.
+    """
     with urlopen(link) as url:
         page = url.read()
-    soup = BeautifulSoup(page, "html.parser")
+    return BeautifulSoup(page, "html.parser")
+
+
+def get_words(soup: BeautifulSoup) -> list[str]:
     answer_lst = soup.find_all(class_="bee-set")
     word_rows = answer_lst[0].find_all("tr")[1:]
     word_lst = []
@@ -64,7 +66,7 @@ def update_combo_frequency(
 def main():
     spelling_bee_links = generate_links()
     combo_frequency = {}
-    for link in spelling_bee_links[:20]:
+    for link in spelling_bee_links:
         words = get_words(link)
         unique_letters = get_unique_letters(words)
         center_letter = get_center_letter(words)
@@ -75,4 +77,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    elapsed_time = timeit.timeit(main, number=1)
+    print(elapsed_time)
