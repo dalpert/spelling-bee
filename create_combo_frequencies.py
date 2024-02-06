@@ -88,9 +88,8 @@ def main():
         update_combo_frequency(combo_frequency_dict, unique_letters, center_letter)
         add_words_to_word_dict(word_dict, word_lst)
 
-    file_path = f"{PICKLE_PATH}/combo_frequency.pkl"
-    with open(file_path, "wb") as file:
-        pickle.dump(combo_frequency_dict, file)
+    pickle_data(combo_frequency_dict)
+    pickle_data(word_dict)
 
 
 if __name__ == "__main__":
