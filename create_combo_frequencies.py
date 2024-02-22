@@ -65,9 +65,9 @@ def add_words_to_word_dict(word_dict, word_lst):
     for word in word_lst:
         key = create_key(get_letter_set(word))
         if key in word_dict:
-            word_dict[key].append(word)
+            word_dict[key].add(word)
         else:
-            word_dict[key] = [word]
+            word_dict[key] = {word}
 
 
 def pickle_data(data, var_name: str) -> None:
